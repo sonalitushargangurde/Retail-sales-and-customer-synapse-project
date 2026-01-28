@@ -1,0 +1,56 @@
+product_id,product_name,category,price
+P101,Laptop,Electronics,55000
+P102,Mobile Phone,Electronics,25000
+P103,Office Chair,Furniture,7000
+P104,Desk Table,Furniture,12000
+P105,LED TV,Electronics,45000
+P106,Headphones,Accessories,3000
+P107,Smart Watch,Accessories,8000
+P108,Tablet,Electronics,30000
+P109,Wireless Mouse,Accessories,1500
+P110,Keyboard,Accessories,2000
+P111,Refrigerator,Appliances,60000
+P112,Washing Machine,Appliances,42000
+P113,Microwave Oven,Appliances,18000
+P114,Air Conditioner,Appliances,52000
+P115,Water Purifier,Appliances,16000
+P116,Ceiling Fan,Appliances,3500
+P117,LED Bulb,Electrical,500
+P118,Extension Board,Electrical,1200
+P119,Power Bank,Accessories,2200
+P120,Bluetooth Speaker,Accessories,6000
+P121,Printer,Electronics,15000
+P122,Scanner,Electronics,18000
+P123,Router,Networking,4000
+P124,Webcam,Accessories,3500
+P125,Monitor,Electronics,17000
+P126,UPS,Electrical,6500
+P127,Vacuum Cleaner,Appliances,14000
+P128,Induction Cooktop,Appliances,3000
+P129,Electric Kettle,Appliances,2000
+P130,Toaster,Appliances,2500
+P131,Coffee Maker,Appliances,4500
+P132,Blender,Appliances,3500
+P133,Juicer,Appliances,5000
+P134,Iron Box,Appliances,2200
+P135,Hair Dryer,Personal Care,2800
+P136,Trimmer,Personal Care,1800
+P137,Electric Shaver,Personal Care,3200
+P138,Air Purifier,Appliances,25000
+P139,Smart Light,Electrical,1800
+P140,Security Camera,Electronics,9000
+P141,Set Top Box,Electronics,3500
+P142,Soundbar,Electronics,22000
+P143,Gaming Console,Electronics,48000
+P144,Game Controller,Accessories,4500
+P145,External Hard Drive,Accessories,6500
+P146,USB Flash Drive,Accessories,1200
+P147,Memory Card,Accessories,900
+P148,Projector,Electronics,32000
+P149,Router Extender,Networking,5500
+P150,Smart Thermostat,Electronics,15000
+P151,VR Headset,Electronics,42000
+P152,Smart Door Lock,Electronics,28000
+P153,Wireless Charger,Accessories,2500
+P154,Electric Geyser,Appliances,23000
+P155,Dishwasher,Appliances,48000

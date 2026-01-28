@@ -1,0 +1,56 @@
+store_id,store_name,city,state
+S001,Central Mall,Pune,MH
+S002,Mega Store,Mumbai,MH
+S003,City Center,Delhi,DL
+S004,Royal Plaza,Jaipur,RJ
+S005,Metro Mall,Bengaluru,KA
+S006,Lake View Mall,Bhopal,MP
+S007,Galaxy Plaza,Indore,MP
+S008,Sunrise Mall,Nagpur,MH
+S009,Silver Square,Nashik,MH
+S010,Urban Hub,Ahmedabad,GJ
+S011,Capital Mall,Gandhinagar,GJ
+S012,Ocean View,Chennai,TN
+S013,Tech Park Mall,Hyderabad,TS
+S014,Greenfield Plaza,Coimbatore,TN
+S015,Riverfront Mall,Surat,GJ
+S016,High Street Mall,Noida,UP
+S017,City Walk,Gurgaon,HR
+S018,North Square,Faridabad,HR
+S019,Heritage Mall,Amritsar,PB
+S020,Golden Plaza,Ludhiana,PB
+S021,Lake City Mall,Udaipur,RJ
+S022,Desert Point,Jodhpur,RJ
+S023,Metro Point,Kolkata,WB
+S024,East End Mall,Howrah,WB
+S025,Bay View Plaza,Visakhapatnam,AP
+S026,Coastal Mall,Vijayawada,AP
+S027,Deccan Mall,Pune,MH
+S028,Techno Park,Bengaluru,KA
+S029,Silicon Square,Bengaluru,KA
+S030,Forum Plaza,Chennai,TN
+S031,Park Street Mall,Kolkata,WB
+S032,Central Square,Patna,BR
+S033,River Side Mall,Ranchi,JH
+S034,Hill View Plaza,Shimla,HP
+S035,Valley Mall,Dehradun,UK
+S036,Capital Square,Raipur,CG
+S037,Smart City Mall,Bhubaneswar,OD
+S038,Diamond Plaza,Surat,GJ
+S039,Sun City Mall,Jaisalmer,RJ
+S040,Royal Court,Ajmer,RJ
+S041,Harbor View,Mumbai,MH
+S042,Infinity Mall,Malad,MH
+S043,Millennium Plaza,Thane,MH
+S044,Cyber Square,Pune,MH
+S045,Central Park Mall,New Delhi,DL
+S046,Grand Bazaar,Kanpur,UP
+S047,Lifestyle Plaza,Lucknow,UP
+S048,Market Street Mall,Agra,UP
+S049,City Square,Gwalior,MP
+S050,Urban Point,Jabalpur,MP
+S051,Metro Center,Faridabad,HR
+S052,Trade Zone,Panaji,GA
+S053,Beach Side Mall,Panaji,GA
+S054,Skyline Plaza,Udupi,KA
+S055,Port View Mall,Kochi,KL
