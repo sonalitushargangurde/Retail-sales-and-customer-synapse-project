@@ -1,0 +1,17 @@
+{
+	"name": "Date and Time Logic",
+	"properties": {
+		"content": {
+			"query": "--Find Customers Inactive for the Last 6 Months\nSELECT\n    customer_id,\n    MAX(sale_date) AS last_purchase_date\nFROM dbo.Sales\nGROUP BY customer_id\nHAVING MAX(sale_date) < DATEADD(MONTH, -6, GETDATE());\n\n\n--Calculate Rolling 3-Month Average Sales\nWITH monthly_sales AS (\n    SELECT\n        FORMAT(sale_date, 'yyyy-MM') AS sales_month,\n        SUM(total_amount) AS monthly_sales\n    FROM dbo.Sales\n    GROUP BY FORMAT(sale_date, 'yyyy-MM')\n)\nSELECT\n    sales_month,\n    monthly_sales,\n    AVG(monthly_sales) OVER (\n        ORDER BY sales_month\n        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW\n    ) AS rolling_3_month_avg\nFROM monthly_sales\nORDER BY sales_month;\n\n--Identify Peak Sales Month Per Year\nWITH monthly_sales AS (\n    SELECT\n        YEAR(sale_date) AS sales_year,\n        MONTH(sale_date) AS sales_month,\n        SUM(total_amount) AS total_sales\n    FROM dbo.Sales\n    GROUP BY YEAR(sale_date), MONTH(sale_date)\n),\nranked_months AS (\n    SELECT *,\n           RANK() OVER (\n               PARTITION BY sales_year\n               ORDER BY total_sales DESC\n           ) AS rnk\n    FROM monthly_sales\n)\nSELECT\n    sales_year,\n    sales_month,\n    total_sales\nFROM ranked_months\nWHERE rnk = 1\nORDER BY sales_year;\n\n--Find Weekend vs Weekday Sales\nSELECT\n    CASE \n        WHEN DATENAME(WEEKDAY, sale_date) IN ('Saturday', 'Sunday')\n            THEN 'Weekend'\n        ELSE 'Weekday'\n    END AS day_type,\n    SUM(total_amount) AS total_sales\nFROM dbo.Sales\nGROUP BY\n    CASE \n        WHEN DATENAME(WEEKDAY, sale_date) IN ('Saturday', 'Sunday')\n            THEN 'Weekend'\n        ELSE 'Weekday'\n    END;\n\n\n--Calculate Average Days Between Customer Purchases\nWITH purchase_gaps AS (\n    SELECT\n        customer_id,\n        sale_date,\n        DATEDIFF(\n            DAY,\n            LAG(sale_date) OVER (\n                PARTITION BY customer_id\n                ORDER BY sale_date\n            ),\n            sale_date\n        ) AS days_between_purchases\n    FROM dbo.Sales\n)\nSELECT\n    customer_id,\n    AVG(days_between_purchases) AS avg_days_between_purchases\nFROM purchase_gaps\nWHERE days_between_purchases IS NOT NULL\nGROUP BY customer_id;\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

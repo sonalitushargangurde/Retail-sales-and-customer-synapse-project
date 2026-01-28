@@ -1,0 +1,17 @@
+{
+	"name": "DB create",
+	"properties": {
+		"content": {
+			"query": "--DB creation\nCREATE DATABASE RetailSalesDB;\nGO\n\nUSE RetailSalesDB;\n\n--Create Master Key\nCREATE MASTER KEY\nENCRYPTION BY PASSWORD = 'StrongPassword@123';\n\n--Create Database Scoped Credential (Managed Identity)\nCREATE DATABASE SCOPED CREDENTIAL SynapseMI\nWITH IDENTITY = 'Managed Identity';\n\n\n--Create External Data Source\nCREATE EXTERNAL DATA SOURCE RetailDataLake\nWITH\n(\n    LOCATION = 'https://retailsalesandcustomer.dfs.core.windows.net/layer-1',\n    CREDENTIAL = SynapseMI\n);\n\n--Create External File Format (CSV)\nCREATE EXTERNAL FILE FORMAT CsvFileFormat\nWITH (\n    FORMAT_TYPE = DELIMITEDTEXT,\n    FORMAT_OPTIONS (\n        FIELD_TERMINATOR = ',',\n        STRING_DELIMITER = '\"',\n        FIRST_ROW = 2\n    )\n);\n\n\n--Read customer file\nSELECT   *\nFROM OPENROWSET(\n    BULK 'customers/*.csv',\n    DATA_SOURCE = 'RetailDataLake',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIRSTROW = 2\n) WITH (\n    customer_id VARCHAR(20),\n    name VARCHAR(100),\n    gender CHAR(1),\n    city VARCHAR(50),\n    state VARCHAR(20),\n    signup_date DATE\n) AS rows;\n\n--Read products file\nSELECT *\nFROM OPENROWSET(\n    BULK 'products/*.csv',\n    DATA_SOURCE = 'RetailDataLake',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIRSTROW = 2\n)\nWITH (\n    product_id VARCHAR(20),\n    product_name VARCHAR(100),\n    category VARCHAR(50),\n    price DECIMAL(12,2)\n) AS products;\n\n--Read store file\nSELECT  *\nFROM OPENROWSET(\n    BULK 'stores/*.csv',\n    DATA_SOURCE = 'RetailDataLake',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIRSTROW = 2\n)\nWITH (\n    store_id VARCHAR(20),\n    store_name VARCHAR(100),\n    city VARCHAR(50),\n    state VARCHAR(20)\n) AS stores;\n\n\n--Read sales files \nSELECT  *\nFROM OPENROWSET(\n    BULK 'sales/*.csv',\n    DATA_SOURCE = 'RetailDataLake',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIRSTROW = 2\n) WITH (\n    sale_id INT,\n    customer_id VARCHAR(20),\n    product_id VARCHAR(20),\n    store_id VARCHAR(20),\n    quantity INT,\n    sale_date DATE,\n    total_amount DECIMAL(12,2)\n) AS rows;\n\n--Create external file format\nCREATE EXTERNAL FILE FORMAT ParquetFileFormat\nWITH (\n    FORMAT_TYPE = PARQUET\n);\n\n--\nCREATE EXTERNAL TABLE curated.monthly_sales\nWITH (\n    LOCATION = 'layer-1/curated/monthly_sales/',\n    --https://retailsalesandcustomer.blob.core.windows.net/layer-1/curated/monthly_sales/_\n    DATA_SOURCE = RetailDataLake,\n    FILE_FORMAT = ParquetFileFormat\n)\nAS\nSELECT\n    YEAR(sale_date)  AS sales_year,\n    MONTH(sale_date) AS sales_month,\n    SUM(total_amount) AS total_sales,\n    SUM(quantity)     AS total_quantity\nFROM OPENROWSET(\n    BULK 'sales/Sales.csv',\n    DATA_SOURCE = 'RetailDataLake',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    FIRSTROW = 2\n) WITH (\n    sale_id INT,\n    customer_id VARCHAR(20) COLLATE Latin1_General_100_CI_AS_SC_UTF8,\n    product_id  VARCHAR(20) COLLATE Latin1_General_100_CI_AS_SC_UTF8,\n    store_id    VARCHAR(20) COLLATE Latin1_General_100_CI_AS_SC_UTF8,\n    quantity INT,\n    sale_date DATE,\n    total_amount DECIMAL(12,2)\n) AS sales\nGROUP BY\n    YEAR(sale_date),\n    MONTH(sale_date);\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

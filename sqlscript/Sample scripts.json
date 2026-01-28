@@ -1,0 +1,17 @@
+{
+	"name": "Sample scripts",
+	"properties": {
+		"content": {
+			"query": "--Total Sales Amount per Month\nSELECT\n    FORMAT(sale_date, 'yyyy-MM') AS sales_month,\n    SUM(total_amount) AS total_sales_amount\nFROM dbo.Sales\nGROUP BY FORMAT(sale_date, 'yyyy-MM')\nORDER BY sales_month;\n\n\n--Top 5 Selling Products by Revenue\nSELECT TOP 5\n    p.product_id,\n    p.product_name,\n    SUM(s.total_amount) AS total_revenue\nFROM dbo.Sales s\nJOIN dbo.Products p\n    ON s.product_id = p.product_id\nGROUP BY p.product_id, p.product_name\nORDER BY total_revenue DESC;\n\n--Number of Customers per State\nSELECT\n    state,\n    COUNT(customer_id) AS customer_count\nFROM dbo.Customers\nGROUP BY state\nORDER BY customer_count DESC;\n\n--Average Order Value per Customer\nSELECT\n    customer_id,\n    AVG(total_amount) AS average_order_value\nFROM dbo.Sales\nGROUP BY customer_id\nORDER BY average_order_value DESC;\n\n--Total Sales by Store\nSELECT\n    st.store_id,\n    st.store_name,\n    SUM(s.total_amount) AS total_store_sales\nFROM dbo.Sales s\nJOIN dbo.Stores st\n    ON s.store_id = st.store_id\nGROUP BY st.store_id, st.store_name\nORDER BY total_store_sales DESC;\n\n--Which City Generates the Highest Revenue?\nSELECT\n    st.city,\n    SUM(s.total_amount) AS total_revenue\nFROM dbo.Sales s\nJOIN dbo.Stores st\n    ON s.store_id = st.store_id\nGROUP BY st.city\nORDER BY total_revenue DESC;\n\n--Category-wise Sales Contribution\nSELECT\n    p.category,\n    SUM(s.total_amount) AS category_sales\nFROM dbo.Sales s\nJOIN dbo.Products p\n    ON s.product_id = p.product_id\nGROUP BY p.category\nORDER BY category_sales DESC;\n\n--Month-over-Month Sales Growth\nWITH monthly_sales AS (\n    SELECT\n        FORMAT(sale_date, 'yyyy-MM') AS sales_month,\n        SUM(total_amount) AS total_sales\n    FROM dbo.Sales\n    GROUP BY FORMAT(sale_date, 'yyyy-MM')\n)\nSELECT\n    sales_month,\n    total_sales,\n    total_sales\n      - LAG(total_sales) OVER (ORDER BY sales_month) AS mom_growth\nFROM monthly_sales\nORDER BY sales_month;\n\n--Repeat vs New Customer Sales\nWITH customer_first_purchase AS (\n    SELECT\n        customer_id,\n        MIN(sale_date) AS first_purchase_date\n    FROM dbo.Sales\n    GROUP BY customer_id\n)\nSELECT\n    CASE\n        WHEN s.sale_date = c.first_purchase_date THEN 'New Customer'\n        ELSE 'Repeat Customer'\n    END AS customer_type,\n    SUM(s.total_amount) AS total_sales\nFROM dbo.Sales s\nJOIN customer_first_purchase c\n    ON s.customer_id = c.customer_id\nGROUP BY\n    CASE\n        WHEN s.sale_date = c.first_purchase_date THEN 'New Customer'\n        ELSE 'Repeat Customer'\n    END;\n\n--Customers Who Haven’t Purchased in Last 6 Months\nSELECT\n    c.customer_id,\n    c.name,\n    MAX(s.sale_date) AS last_purchase_date\nFROM dbo.Customers c\nLEFT JOIN dbo.Sales s\n    ON c.customer_id = s.customer_id\nGROUP BY c.customer_id, c.name\nHAVING MAX(s.sale_date) < DATEADD(MONTH, -6, GETDATE())\n   OR MAX(s.sale_date) IS NULL;\n\n\n\n\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

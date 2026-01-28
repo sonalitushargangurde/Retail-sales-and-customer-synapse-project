@@ -1,0 +1,17 @@
+{
+	"name": "Extenal table creation",
+	"properties": {
+		"content": {
+			"query": "--Sales table\nCREATE EXTERNAL TABLE dbo.Sales\n(\n    sale_id INT,\n    customer_id VARCHAR(20),\n    product_id VARCHAR(20),\n    store_id VARCHAR(20),\n    quantity INT,\n    sale_date DATE,\n    total_amount DECIMAL(12,2)\n)\nWITH\n(\n    LOCATION = 'sales/',\n    DATA_SOURCE = RetailDataLake,\n    FILE_FORMAT = CsvFileFormat\n);\n\n--Customers tables\nCREATE EXTERNAL TABLE dbo.Customers\n(\n    customer_id VARCHAR(20),\n    name VARCHAR(100),\n    gender CHAR(1),\n    city VARCHAR(50),\n    state VARCHAR(20),\n    signup_date DATE\n)\nWITH\n(\n    LOCATION = 'customers/',\n    DATA_SOURCE = RetailDataLake,\n    FILE_FORMAT = CsvFileFormat\n);\n\n--Product table\nCREATE EXTERNAL TABLE dbo.Products\n(\n    product_id VARCHAR(20),\n    product_name VARCHAR(100),\n    category VARCHAR(50),\n    price DECIMAL(12,2)\n)\nWITH\n(\n    LOCATION = 'products/',\n    DATA_SOURCE = RetailDataLake,\n    FILE_FORMAT = CsvFileFormat\n);\n\n--Stores table\nCREATE EXTERNAL TABLE dbo.Stores\n(\n    store_id VARCHAR(20),\n    store_name VARCHAR(100),\n    city VARCHAR(50),\n    state VARCHAR(20)\n)\nWITH\n(\n    LOCATION = 'stores/',\n    DATA_SOURCE = RetailDataLake,\n    FILE_FORMAT = CsvFileFormat\n);\n\n\nSELECT COUNT(*) as Total_count FROM dbo.Sales;\nSELECT COUNT(*) AS Total_count FROM dbo.Customers;\nSELECT COUNT(*) AS Total_count FROM dbo.Products;\nSELECT COUNT(*) AS Total_count FROM dbo.Stores;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Window Functions",
+	"properties": {
+		"content": {
+			"query": "--Rank Products by Revenue Within Each Category\nSELECT\n    p.category,\n    p.product_id,\n    p.product_name,\n    SUM(s.total_amount) AS revenue,\n    RANK() OVER (\n        PARTITION BY p.category\n        ORDER BY SUM(s.total_amount) DESC\n    ) AS product_rank\nFROM dbo.Sales s\nJOIN dbo.Products p\n    ON s.product_id = p.product_id\nGROUP BY p.category, p.product_id, p.product_name;\n\n\n--Month-over-Month (MoM) Sales Growth %\nWITH monthly_sales AS (\n    SELECT\n        FORMAT(sale_date, 'yyyy-MM') AS sales_month,\n        SUM(total_amount) AS monthly_sales\n    FROM dbo.Sales\n    GROUP BY FORMAT(sale_date, 'yyyy-MM')\n)\nSELECT\n    sales_month,\n    monthly_sales,\n    LAG(monthly_sales) OVER (ORDER BY sales_month) AS prev_month_sales,\n    ROUND(\n        (monthly_sales - LAG(monthly_sales) OVER (ORDER BY sales_month))\n        * 100.0 / NULLIF(LAG(monthly_sales) OVER (ORDER BY sales_month), 0),\n        2\n    ) AS mom_growth_percent\nFROM monthly_sales\nORDER BY sales_month;\n\n\n--First and Last Purchase Date Per Customer\nSELECT\n    customer_id,\n    MIN(sale_date) AS first_purchase_date,\n    MAX(sale_date) AS last_purchase_date\nFROM dbo.Sales\nGROUP BY customer_id;\n\n--Top Customer Per Month (By Revenue)\nWITH customer_monthly_sales AS (\n    SELECT\n        FORMAT(sale_date, 'yyyy-MM') AS sales_month,\n        customer_id,\n        SUM(total_amount) AS total_sales\n    FROM dbo.Sales\n    GROUP BY FORMAT(sale_date, 'yyyy-MM'), customer_id\n),\nranked_customers AS (\n    SELECT *,\n           RANK() OVER (\n               PARTITION BY sales_month\n               ORDER BY total_sales DESC\n           ) AS rnk\n    FROM customer_monthly_sales\n)\nSELECT\n    sales_month,\n    customer_id,\n    total_sales\nFROM ranked_customers\nWHERE rnk = 1\nORDER BY sales_month;\n\n--Detect Duplicate Sales Records Using Window Functions\nSELECT *\nFROM (\n    SELECT\n        *,\n        ROW_NUMBER() OVER (\n            PARTITION BY customer_id, product_id, sale_date, total_amount\n            ORDER BY sale_id\n        ) AS row_num\n    FROM dbo.Sales\n) t\nWHERE row_num > 1;\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

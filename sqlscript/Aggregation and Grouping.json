@@ -1,0 +1,17 @@
+{
+	"name": "Aggregation and Grouping",
+	"properties": {
+		"content": {
+			"query": "--Monthly Sales and Running Total\nWITH monthly_sales AS (\n    SELECT\n        FORMAT(sale_date, 'yyyy-MM') AS sales_month,\n        SUM(total_amount) AS monthly_sales\n    FROM dbo.Sales\n    GROUP BY FORMAT(sale_date, 'yyyy-MM')\n)\nSELECT\n    sales_month,\n    monthly_sales,\n    SUM(monthly_sales) OVER (ORDER BY sales_month) AS running_total_sales\nFROM monthly_sales\nORDER BY sales_month;\n\n--Top 3 Products per Category by Revenue\nWITH product_revenue AS (\n    SELECT\n        p.category,\n        p.product_id,\n        p.product_name,\n        SUM(s.total_amount) AS total_revenue,\n        DENSE_RANK() OVER (\n            PARTITION BY p.category\n            ORDER BY SUM(s.total_amount) DESC\n        ) AS rnk\n    FROM dbo.Sales s\n    JOIN dbo.Products p\n        ON s.product_id = p.product_id\n    GROUP BY p.category, p.product_id, p.product_name\n)\nSELECT\n    category,\n    product_id,\n    product_name,\n    total_revenue\nFROM product_revenue\nWHERE rnk <= 3\nORDER BY category, total_revenue DESC;\n\n--Customer Lifetime Value (CLV)\nSELECT\n    customer_id,\n    SUM(total_amount) AS customer_lifetime_value\nFROM dbo.Sales\nGROUP BY customer_id\nORDER BY customer_lifetime_value DESC;\n\n\n--Store-wise Contribution % to Total Sales\nWITH store_sales AS (\n    SELECT\n        store_id,\n        SUM(total_amount) AS store_total_sales\n    FROM dbo.Sales\n    GROUP BY store_id\n),\noverall_sales AS (\n    SELECT SUM(store_total_sales) AS grand_total\n    FROM store_sales\n)\nSELECT\n    st.store_id,\n    st.store_name,\n    ss.store_total_sales,\n    ROUND(\n        (ss.store_total_sales * 100.0) / os.grand_total,\n        2\n    ) AS contribution_percentage\nFROM store_sales ss\nJOIN overall_sales os ON 1 = 1\nJOIN dbo.Stores st\n    ON ss.store_id = st.store_id\nORDER BY contribution_percentage DESC;\n\n--Days with Sales Higher Than Daily Average\nWITH daily_sales AS (\n    SELECT\n        sale_date,\n        SUM(total_amount) AS daily_total\n    FROM dbo.Sales\n    GROUP BY sale_date\n)\nSELECT\n    sale_date,\n    daily_total\nFROM daily_sales\nWHERE daily_total >\n      (SELECT AVG(daily_total) FROM daily_sales)\nORDER BY daily_total DESC;\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

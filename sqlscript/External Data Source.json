@@ -1,0 +1,17 @@
+{
+	"name": "External Data Source",
+	"properties": {
+		"content": {
+			"query": "CREATE EXTERNAL DATA SOURCE RetailDataLake\nWITH\n(\n    LOCATION = 'https://retailsalesandcustomer.dfs.core.windows.net/layer-1',\n    CREDENTIAL = SynapseMI\n);\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

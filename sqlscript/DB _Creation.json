@@ -1,0 +1,17 @@
+{
+	"name": "DB _Creation",
+	"properties": {
+		"content": {
+			"query": "CREATE DATABASE RetailSalesDB;\nGO\nUSE RetailSalesDB;\n\n\nCREATE MASTER KEY\nENCRYPTION BY PASSWORD = 'StrongPassword@123';\n\n\nCREATE DATABASE SCOPED CREDENTIAL SynapseMI\nWITH IDENTITY = 'Managed Identity';\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"name": "Joins and Subqueries",
+	"properties": {
+		"content": {
+			"query": "--Customers Who Purchased All Product Categories\nWITH customer_categories AS (\n    SELECT DISTINCT\n        s.customer_id,\n        p.category\n    FROM dbo.Sales s\n    JOIN dbo.Products p\n        ON s.product_id = p.product_id\n),\ntotal_categories AS (\n    SELECT COUNT(DISTINCT category) AS category_count\n    FROM dbo.Products\n)\nSELECT\n    cc.customer_id\nFROM customer_categories cc\nGROUP BY cc.customer_id\nHAVING COUNT(DISTINCT cc.category) =\n       (SELECT category_count FROM total_categories);\n\n--Products Never Sold\nSELECT\n    p.product_id,\n    p.product_name\nFROM dbo.Products p\nLEFT JOIN dbo.Sales s\n    ON p.product_id = s.product_id\nWHERE s.product_id IS NULL;\n\n--Customers Who Bought the Same Product More Than Once\nSELECT\n    customer_id,\n    product_id,\n    COUNT(*) AS purchase_count\nFROM dbo.Sales\nGROUP BY customer_id, product_id\nHAVING COUNT(*) > 1\nORDER BY purchase_count DESC;\n\n--Stores With Sales Higher Than Their City Average\nWITH store_sales AS (\n    SELECT\n        st.store_id,\n        st.store_name,\n        st.city,\n        SUM(s.total_amount) AS store_total_sales\n    FROM dbo.Sales s\n    JOIN dbo.Stores st\n        ON s.store_id = st.store_id\n    GROUP BY st.store_id, st.store_name, st.city\n),\ncity_avg_sales AS (\n    SELECT\n        city,\n        AVG(store_total_sales) AS avg_city_sales\n    FROM store_sales\n    GROUP BY city\n)\nSELECT\n    ss.store_id,\n    ss.store_name,\n    ss.city,\n    ss.store_total_sales\nFROM store_sales ss\nJOIN city_avg_sales cs\n    ON ss.city = cs.city\nWHERE ss.store_total_sales > cs.avg_city_sales\nORDER BY ss.city, ss.store_total_sales DESC;\n\n---Customers Who Bought From More Than One Store\nSELECT\n    customer_id,\n    COUNT(DISTINCT store_id) AS store_count\nFROM dbo.Sales\nGROUP BY customer_id\nHAVING COUNT(DISTINCT store_id) > 1\nORDER BY store_count DESC;\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "RetailSalesDB",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
